@@ -8,8 +8,8 @@
     "lint": "oxlint ."
   },
   "devDependencies": {
-    "@vemjs/core": "^0.1.1",
-    "@vemjs/plugin-api": "^0.1.1",
+    "@vemjs/core": "^0.1.3",
+    "@vemjs/plugin-api": "^0.1.3",
     "oxlint": "^1.72.0",
     "prettier": "^3.9.4",
     "typescript": "~6.0.2"
