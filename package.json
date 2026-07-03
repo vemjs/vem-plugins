@@ -1,0 +1,18 @@
+{
+  "name": "@vemjs/plugins-root",
+  "private": true,
+  "workspaces": [
+    "*"
+  ],
+  "scripts": {
+    "build": "bun run --filter '@vemjs/*' build",
+    "test": "bun test",
+    "format": "prettier --write .",
+    "lint": "oxlint ."
+  },
+  "devDependencies": {
+    "oxlint": "^1.72.0",
+    "prettier": "^3.9.4",
+    "typescript": "~6.0.2"
+  }
+}
