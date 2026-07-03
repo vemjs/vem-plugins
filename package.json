@@ -1,11 +1,8 @@
 {
   "name": "@vemjs/plugins-root",
   "private": true,
-  "workspaces": [
-    "*"
-  ],
   "scripts": {
-    "build": "bun run --filter '@vemjs/*' build",
+    "build": "for dir in autopairs git layout-customizer lualine telescope treesitter trim-whitespace; do (cd $dir && bun run build); done",
     "test": "bun test",
     "format": "prettier --write .",
     "lint": "oxlint ."
