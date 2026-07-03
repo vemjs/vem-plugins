@@ -1,0 +1,21 @@
+{
+  "name": "@vemjs/plugin-treesitter",
+  "version": "0.1.0",
+  "description": "Syntax highlighting plugin for the Vem editor",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "@vemjs/core": "^0.1.1",
+    "@vemjs/plugin-api": "^0.1.1"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
