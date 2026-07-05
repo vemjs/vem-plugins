@@ -56,7 +56,7 @@ describe('Telescope Plugin', () => {
     let draculaTriggered = false;
     registry.register({
       name: 'theme-mock',
-      version: '0.1.0',
+      version: '0.1.1',
       activate(ctx) {
         ctx.registerCommand('theme.setDracula', () => {
           draculaTriggered = true;

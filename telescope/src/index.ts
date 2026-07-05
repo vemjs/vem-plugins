@@ -3,7 +3,7 @@ import { type FloatingPopupItem } from '@vemjs/core';
 
 export const TelescopePlugin: VemPlugin = {
   name: 'telescope',
-  version: '0.1.0',
+  version: '0.1.1',
   activate(context) {
     const editor = context.editorState;
 

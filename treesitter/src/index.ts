@@ -13,7 +13,7 @@ const COLORS = {
 
 export const TreesitterPlugin: VemPlugin = {
   name: 'treesitter',
-  version: '0.1.0',
+  version: '0.1.1',
   activate(context) {
     const editor = context.editorState;
 
@@ -39,7 +39,7 @@ export const TreesitterPlugin: VemPlugin = {
           regex: /^(?:console|window|document|process|Math|JSON|Object|Array|String|Number|Boolean)\b/,
         },
         { type: 'function', regex: /^\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\()/ },
-        { type: 'default', regex: /^[^"'`\/\w]+/ }, // operators/whitespace
+        { type: 'default', regex: /^[^"'`/\w]+/ }, // operators/whitespace
         { type: 'default', regex: /^\w+/ }, // identifiers
       ];
 

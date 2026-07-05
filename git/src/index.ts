@@ -3,7 +3,7 @@ import { type GutterDecoration } from '@vemjs/core';
 
 export const GitPlugin: VemPlugin = {
   name: 'git',
-  version: '0.1.0',
+  version: '0.1.1',
   activate(context) {
     const editor = context.editorState;
 
@@ -36,7 +36,7 @@ export const GitPlugin: VemPlugin = {
               }
             }
           }
-        } catch (e) {
+        } catch {
           // No-op fallback
         }
       }

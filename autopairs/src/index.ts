@@ -2,7 +2,7 @@ import { type VemPlugin } from '@vemjs/plugin-api';
 
 export const AutopairsPlugin: VemPlugin = {
   name: 'autopairs',
-  version: '0.1.0',
+  version: '0.1.1',
   activate(context) {
     const editor = context.editorState;
     const pairs: Record<string, string> = {

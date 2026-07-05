@@ -45,7 +45,7 @@ const THEMES: Record<string, any> = {
 
 export const LayoutCustomizerPlugin: VemPlugin = {
   name: 'layout-customizer',
-  version: '0.1.0',
+  version: '0.1.1',
   activate(context) {
     const editor = context.editorState;
 

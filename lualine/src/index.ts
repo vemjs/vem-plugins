@@ -3,7 +3,7 @@ import { type Diagnostic } from '@vemjs/core';
 
 export const LualinePlugin: VemPlugin = {
   name: 'lualine',
-  version: '0.1.0',
+  version: '0.1.1',
   activate(context) {
     const editor = context.editorState;
     let isUpdating = false;
