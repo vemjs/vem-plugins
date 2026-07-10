@@ -20,10 +20,15 @@ export const GitPlugin: VemPlugin = {
         try {
           const nodeChildProcess = "child_process";
           const cp = (await import(/* @vite-ignore */ nodeChildProcess)) as any;
-          if (fileUri && fileUri !== "untitled") {
-            const stdout = cp.execSync(`git diff -U0 -- ${fileUri}`, {
-              encoding: "utf8",
-            }) as string;
+          if (fileUri && fileUri !== "untitled" && !fileUri.includes("\0")) {
+            // Argument array (no shell) so fileUri can never inject a command.
+            const stdout = cp.execFileSync(
+              "git",
+              ["diff", "-U0", "--", fileUri],
+              {
+                encoding: "utf8",
+              },
+            ) as string;
             const lines = stdout.split("\n");
             for (const line of lines) {
               if (line.startsWith("@@")) {
