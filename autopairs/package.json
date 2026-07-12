@@ -1,6 +1,6 @@
 {
   "name": "@vemjs/plugin-autopairs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Autopairs plugin for the Vem editor",
   "type": "module",
   "main": "./dist/index.js",
