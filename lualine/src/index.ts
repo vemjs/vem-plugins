@@ -51,7 +51,10 @@ export const LualinePlugin: VemPlugin = {
         // 3. Filename segment
         const fileUri = editor.fileUri;
         const filename = fileUri.substring(fileUri.lastIndexOf("/") + 1);
-        const isModified = editor.getPendingKeys().length > 0;
+        // `modified` is core's real dirty flag (set on edits, cleared by
+        // `:w`) — pending keys are just an in-flight chord like `d` awaiting
+        // `dd`, which is not what Vim's [+] means.
+        const isModified = editor.modified;
         const fileSeg = {
           text: ` ${filename}${isModified ? " [+]" : ""} `,
           bg: "#1e293b", // slate-800

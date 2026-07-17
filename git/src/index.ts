@@ -3,7 +3,7 @@ import { type GutterDecoration } from "@vemjs/core";
 
 export const GitPlugin: VemPlugin = {
   name: "git",
-  version: "0.1.1",
+  version: "0.1.2",
   activate(context) {
     const editor = context.editorState;
 
@@ -12,32 +12,15 @@ export const GitPlugin: VemPlugin = {
       const fileUri = editor.fileUri;
       const hasRealFile =
         !!fileUri && fileUri !== "untitled" && !fileUri.includes("\0");
-      // Browsers and webviews (vem.run, and vem-desktop's Tauri webview) have
-      // no shell access — `child_process` only resolves in a real Node/Bun
-      // runtime. Desktop git integration should route through a Tauri
-      // backend command instead (see vem-desktop's `get_vem_dirs` pattern),
-      // not this Node-only path.
-      const canShellOut = typeof window === "undefined";
 
-      if (hasRealFile && canShellOut) {
+      // The diff comes from the host's `gitDiff` capability (plugin-api >=
+      // 0.1.7): the desktop build backs it with a Tauri command, a Node/Bun
+      // test host can shell out directly, and a plain browser host provides
+      // nothing — in which case there are no signs, never fabricated ones.
+      if (hasRealFile && context.gitDiff) {
         try {
-          const nodeChildProcess = "child_process";
-          const nodePath = "path";
-          const cp = (await import(/* @vite-ignore */ nodeChildProcess)) as any;
-          const path = (await import(/* @vite-ignore */ nodePath)) as any;
-          // Run from the file's own directory, not this process's cwd — a
-          // desktop app is almost never launched from inside the project the
-          // open file belongs to, and `git diff -- <path>` resolves `path`
-          // relative to cwd's repository, not the path's own.
-          const stdout = cp.execFileSync(
-            "git",
-            ["diff", "-U0", "--", fileUri],
-            {
-              cwd: path.dirname(fileUri),
-              encoding: "utf8",
-            },
-          ) as string;
-          const lines = stdout.split("\n");
+          const stdout = await context.gitDiff(fileUri);
+          const lines = (stdout ?? "").split("\n");
           for (const line of lines) {
             if (line.startsWith("@@")) {
               const match = line.match(
@@ -61,8 +44,6 @@ export const GitPlugin: VemPlugin = {
           // no signs rather than guessing.
         }
       }
-      // Untitled buffers and non-shell-capable runtimes always end up here
-      // with an empty map: no fabricated decorations.
 
       editor.setGutterDecorations(decorations);
     };
@@ -70,6 +51,12 @@ export const GitPlugin: VemPlugin = {
     updateGitSigns();
 
     context.onDidChangeBuffer(() => {
+      updateGitSigns();
+    });
+    // A save is the moment the on-disk file actually changes — refresh even
+    // when the buffer text itself didn't fire a change (e.g. `:w` after
+    // trim-whitespace rewrote lines).
+    context.onSave(() => {
       updateGitSigns();
     });
   },
