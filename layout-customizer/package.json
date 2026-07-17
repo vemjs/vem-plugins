@@ -1,6 +1,6 @@
 {
   "name": "@vemjs/plugin-layout-customizer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Layout and Theme customizer plugin for the Vem editor",
   "type": "module",
   "main": "./dist/index.js",
