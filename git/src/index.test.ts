@@ -2,22 +2,47 @@ import { describe, it, expect, beforeAll, afterAll } from "bun:test";
 import { execFileSync } from "child_process";
 import { mkdtempSync, rmSync, writeFileSync, realpathSync } from "fs";
 import { tmpdir } from "os";
-import { join } from "path";
+import { join, dirname } from "path";
 import { VemEditorState } from "@vemjs/core";
 import { PluginRegistry } from "@vemjs/plugin-api";
 import { GitPlugin } from "./index";
+
+// The test host provides the same capability shape the desktop's Tauri
+// backend does — shelling out from the file's own directory.
+const shellGitDiff = async (fileUri: string): Promise<string | null> => {
+  try {
+    return execFileSync("git", ["diff", "-U0", "--", fileUri], {
+      cwd: dirname(fileUri),
+      encoding: "utf8",
+    });
+  } catch {
+    return null;
+  }
+};
 
 describe("Git Plugin", () => {
   it("shows no gutter signs for an untitled buffer (no fabricated mock data)", async () => {
     const editor = new VemEditorState("Line 1\nLine 2\nLine 3\nLine 4\nLine 5");
 
-    const registry = new PluginRegistry(editor);
+    const registry = new PluginRegistry(editor, { gitDiff: shellGitDiff });
     registry.register(GitPlugin);
 
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     // Regression: this plugin used to paint hardcoded green/blue/red signs
     // on lines 0/2/4 of every buffer, real diff or not.
+    expect(editor.gutterDecorations.size).toBe(0);
+  });
+
+  it("shows no gutter signs when the host provides no gitDiff capability (browser)", async () => {
+    const editor = new VemEditorState("line1\nline2");
+    editor.setFileUri("/definitely/a/real/path.txt");
+
+    const registry = new PluginRegistry(editor);
+    registry.register(GitPlugin);
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
     expect(editor.gutterDecorations.size).toBe(0);
   });
 
@@ -44,11 +69,11 @@ describe("Git Plugin", () => {
       if (dir) rmSync(dir, { recursive: true, force: true });
     });
 
-    it("marks real changed lines from `git diff`, not fixed line numbers", async () => {
+    it("marks real changed lines from the host's gitDiff capability", async () => {
       const editor = new VemEditorState("line1\nCHANGED\nline3");
       editor.setFileUri(filePath);
 
-      const registry = new PluginRegistry(editor);
+      const registry = new PluginRegistry(editor, { gitDiff: shellGitDiff });
       registry.register(GitPlugin);
 
       await new Promise((resolve) => setTimeout(resolve, 0));
