@@ -16,7 +16,7 @@
     "@vemjs/plugin-api": "^0.1.4"
   },
   "devDependencies": {
-    "typescript": "~6.0.2"
+    "typescript": "~7.0.2"
   },
   "publishConfig": {
     "access": "public"
